@@ -2,10 +2,25 @@ const express = require('express')
 const taskRouter = new express.Router()
 const Task = require('../models/tasks.js')
 
-
-
 taskRouter.get("/tasks",(req,res)=>{
-    res.send("tasks get method")
+    Task.find({}).then((tasks)=>{
+        res.send(tasks)
+    }).catch((e)=>{
+        return res.status(500).send()
+    })
+})
+
+taskRouter.get("/tasks/:id",(req,res)=>{
+    console.log(req.params)
+    _id=req.params.id
+    Task.findById(_id).then((task)=>{
+        if(!task){
+            return res.status(404).send()
+        }
+        res.send(task)
+    }).catch((e)=>{
+        return res.status(500).send()
+    })
 })
 
 taskRouter.post("/tasks",(req,res)=>{
