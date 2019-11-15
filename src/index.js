@@ -1,4 +1,5 @@
 const express = require('express')
+const bcrypt = require('bcryptjs')
 
 require('./db/mongoose.js')
 const User = require('./models/users.js')

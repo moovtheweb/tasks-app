@@ -45,13 +45,26 @@ userRouter.post("/users", async (req,res)=>{
 })
 
 userRouter.patch("/users/:id", async (req,res)=> {
-    console.log(req.params)
+    //console.log(req.params)
     const _id = req.params.id
     try{
-        const user = await User.findByIdAndUpdate(_id,req.body,{new:true, runvalidators:true, })
+        const user = await User.findById(_id)
+        //const user = await User.findByIdAndUpdate(_id,req.body,{new:true, runvalidators:true, })
         if(!user){
              return res.status(404).send()
          }
+         const keys = Object.keys(user.schema.paths)
+         //console.log('before' + user)
+
+         keys.forEach((key) => {
+             if(!key.startsWith('_')){
+                 if(req.body[key] != undefined)
+                    user[key] = req.body[key]
+             }
+         })
+
+         //console.log('after' + user)
+         await user.save()
          res.status(200).send(user)
      } catch(e){
         console.log('error in fetching users')
